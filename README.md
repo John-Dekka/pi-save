@@ -1,8 +1,10 @@
 # Save Extension for pi
 
-Never ask your agent to save its latest response again!
+Finally figured out why I kept yelling "just save that as a file" at my agent in anger. 😂
 
-A small but useful extension that lets you pull any message out of your current pi session and save it as a file.
+This is a simple but useful /save command. Pick any message, hit enter, and your editor opens with it ready to go. No copy-paste, no export dance, no re-prompt to save the last response as file.
+
+---
 
 ## Quick Start
 

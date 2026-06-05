@@ -23,8 +23,6 @@ Unlike a generic export, the file lands directly in your project directory at `.
 
 ## How It Works
 
-Using Save is a single keystroke away:
-
 1. **Install the extension**, obviously.
 2. **Type `/save`** in interactive mode
 3. **Pick a message** from the session tree (pi's built-in `TreeSelectorComponent` — looks exactly like `/tree`)
@@ -32,7 +30,6 @@ Using Save is a single keystroke away:
 5. **Close the editor** — the file is already saved at `.pi/saved_messages/<role>_<entry-id-prefix>_<slug>.md`
 
 ## Requirements
-
 - [pi](https://pi.dev) coding agent (interactive TUI mode)
 - Node.js that supports ES modules
 - A text editor available on `$PATH` (or set `$VISUAL` / `$EDITOR`)

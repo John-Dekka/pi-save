@@ -1,0 +1,13 @@
+{
+  "name": "pi-save",
+  "version": "0.1.0",
+  "description": "Save extension for pi - opens a session tree picker and launches the user's default text editor with the selected message body so it can be saved as a single file",
+  "keywords": ["pi-package", "pi", "extension", "save", "export", "editor"],
+  "pi": {
+    "extensions": ["./save.ts"]
+  },
+  "peerDependencies": {
+    "@earendil-works/pi-coding-agent": "*",
+    "@earendil-works/pi-tui": "*"
+  }
+}

@@ -1,0 +1,48 @@
+# Save Extension for pi
+
+Never ask your agent to save its latest response again!
+
+A small but useful extension that lets you pull any message out of your current pi session and save it as a file.
+
+## Quick Start
+
+### Install the extension
+```bash
+pi install git:github.com/John-Dekka/pi-save
+```
+
+That's it. Type `/save` and you're saving.
+
+## What It Is
+
+pi-save is an extension for [pi](https://pi.dev) that adds a `/save` slash command. When you cast `/save`, the current session tree opens in the picker. You navigate to a message — user, assistant, tool result, bash execution, custom, branch summary, compaction summary, the lot — press Enter, and your default text editor launches with that message's body preloaded.
+
+Unlike a generic export, the file lands directly in your project directory at `.pi/saved_messages/` with a descriptive name like `assistant_a53f79fc_approach-b-is-ex.md`. Review the content, make tweaks, close the editor, and the file stays right where you want it.
+
+## How It Works
+
+Using Save is a single keystroke away:
+
+1. **Install the extension**, obviously.
+2. **Type `/save`** in interactive mode
+3. **Pick a message** from the session tree (pi's built-in `TreeSelectorComponent` — looks exactly like `/tree`)
+4. **Edit in your editor** — the message body opens in `$VISUAL`, then `$EDITOR`, then a platform default (`notepad` on Windows, `nano` elsewhere)
+5. **Close the editor** — the file is already saved at `.pi/saved_messages/<role>_<entry-id-prefix>_<slug>.md`
+
+## Requirements
+
+- [pi](https://pi.dev) coding agent (interactive TUI mode)
+- Node.js that supports ES modules
+- A text editor available on `$PATH` (or set `$VISUAL` / `$EDITOR`)
+- The extension currently relies on pi's interactive TUI — the picker does not work in `--mode rpc` or `-p` print mode
+
+## Usage Notes
+
+- Saved files accumulate in `.pi/saved_messages/` under your project root. Each save produces a deterministic filename — saving the same message twice overwrites the previous file, which is usually what you want.
+- The file extension is always `.md` because the body content is most often plain text or markdown. Your editor doesn't care about the extension; you can change it if you like.
+- Messages with no text body (image-only user messages, empty assistant turns, model changes) are skipped in the picker. If you only see a few messages, that's why.
+- The picker does not modify the session — it's a read-only view. Selecting a message just hands its body to the editor; the session leaf stays where it was.
+
+## License
+
+MIT - Use it, share it, make it better. ♥️

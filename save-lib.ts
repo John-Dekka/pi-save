@@ -5,7 +5,6 @@
  * without pulling in the TUI runtime.
  */
 
-import { createHash } from "node:crypto";
 import { join } from "node:path";
 
 import type { SessionEntry } from "@earendil-works/pi-coding-agent";

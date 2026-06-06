@@ -7,7 +7,6 @@
     "extensions": ["./save.ts"]
   },
   "peerDependencies": {
-    "@earendil-works/pi-coding-agent": "*",
-    "@earendil-works/pi-tui": "*"
+    "@earendil-works/pi-coding-agent": "*"
   }
 }

@@ -259,3 +259,58 @@ export function buildSaveFileContent(entry: SessionEntry, body: ExtractedBody): 
 	lines.push("");
 	return lines.join("\n");
 }
+
+// ============
+// Conversation export (/save all)
+// ============
+
+/**
+ * Build a JSON string representing the conversation as an array of
+ * `{role, content}` objects. Only user and assistant messages with plain
+ * text content are included — tool calls, tool results, thinking blocks,
+ * model changes, and any other roles are filtered out.
+ *
+ * The entries should be in DFS order (as returned by `collectAllEntries`).
+ */
+export function buildConversationJson(entries: SessionEntry[]): string {
+	const messages: Array<{ role: string; content: string }> = [];
+
+	for (const entry of entries) {
+		if (entry.type !== "message" || !entry.message) continue;
+		const m = entry.message as unknown as Record<string, unknown>;
+		const role = m.role;
+		if (role !== "user" && role !== "assistant") continue;
+
+		const text = extractTextBlocks(m.content).trim();
+		if (!text) continue;
+
+		messages.push({ role: role as string, content: text });
+	}
+
+	return JSON.stringify(messages, null, 2) + "\n";
+}
+
+/**
+ * Generate a descriptive filename for a conversation export.
+ * Format: `conversation_<YYYY-MM-DD>_<slug>.json`
+ * The slug is derived from the first user message in the session.
+ */
+export function generateConversationFilename(entries: SessionEntry[]): string {
+	const date = new Date().toISOString().slice(0, 10);
+	let slug = "conversation";
+	for (const entry of entries) {
+		if (entry.type !== "message" || !entry.message) continue;
+		const m = entry.message as unknown as Record<string, unknown>;
+		if (m.role !== "user") continue;
+		const text = extractTextBlocks(m.content).trim();
+		if (text) {
+			slug = text
+				.toLowerCase()
+				.replace(/[^a-z0-9]+/g, "-")
+				.replace(/^-|-$/g, "")
+				.slice(0, 24);
+			break;
+		}
+	}
+	return `conversation_${date}_${slug}.json`;
+}

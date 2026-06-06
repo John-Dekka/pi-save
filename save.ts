@@ -29,8 +29,10 @@ import { writeFileSync, mkdirSync } from "node:fs";
 import { join } from "node:path";
 
 import {
+	buildConversationJson,
 	buildSaveFileContent,
 	extractEntryBody,
+	generateConversationFilename,
 	generateSaveFilename,
 	getSaveDir,
 	resolveEditor,
@@ -84,8 +86,11 @@ function collectAllEntries(tree: any[]): SessionEntry[] {
 export default function saveExtension(pi: ExtensionAPI) {
 	pi.registerCommand("save", {
 		description:
-			"Open the session tree, pick a message, and launch your default text editor ($VISUAL/$EDITOR) with the message body so you can save it as a file",
-		handler: async (_args, ctx) => {
+			"Open the session tree, pick a message, and launch your default text editor ($VISUAL/$EDITOR) with the message body so you can save it as a file. Use /save all to export the full conversation as JSON.",
+		getArgumentCompletions: (_prefix) => {
+			return [{ value: "all", label: "all — save the full conversation as JSON" }];
+		},
+		handler: async (args, ctx) => {
 			if (!ctx.hasUI) return;
 			if (ctx.mode !== "tui") {
 				ctx.ui.notify("The /save command requires the interactive TUI mode", "warning");
@@ -96,6 +101,33 @@ export default function saveExtension(pi: ExtensionAPI) {
 			const tree = sm.getTree();
 			const leafId = sm.getLeafId();
 			const entries = collectAllEntries(tree);
+
+			// ---- /save all: export the full conversation as JSON ----
+			if (args.trim() === "all") {
+				const json = buildConversationJson(entries);
+				if (json.trim() === "[]") {
+					ctx.ui.notify("No user or assistant messages found in this session", "warning");
+					return;
+				}
+
+				const saveDir = getSaveDir();
+				const saveFile = join(saveDir, generateConversationFilename(entries));
+				try {
+					mkdirSync(saveDir, { recursive: true });
+					writeFileSync(saveFile, json, "utf-8");
+				} catch (err) {
+					ctx.ui.notify(
+						`Failed to write conversation: ${(err as Error).message}`,
+						"error",
+					);
+					return;
+				}
+
+				ctx.ui.notify(`Saved: ${saveFile}`, "info");
+				return;
+			}
+
+			// ---- Single-message save ----
 			const savable = entries.filter((e) => extractEntryBody(e) !== null);
 
 			if (savable.length === 0) {

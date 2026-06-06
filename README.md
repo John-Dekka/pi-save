@@ -17,17 +17,20 @@ That's it. Type `/save` and you're saving.
 
 ## What It Is
 
-pi-save is an extension for [pi](https://pi.dev) that adds a `/save` slash command. When you cast `/save`, the current session tree opens in the picker. You navigate to a message — user, assistant, tool result, bash execution, custom, branch summary, compaction summary, the lot — press Enter, and your default text editor launches with that message's body preloaded.
+pi-save is an extension for [pi](https://pi.dev) that adds a `/save` slash command. You have two ways to use it:
 
-Unlike a generic export, the file lands directly in your project directory at `.pi/saved_messages/` with a descriptive name like `assistant_a53f79fc_approach-b-is-ex.md`. Review the content, make tweaks, close the editor, and the file stays right where you want it.
+- **`/save`** — opens the session tree picker. Pick any single message — user, assistant, tool result, bash execution, custom, branch summary, compaction summary, the lot — and your editor opens with that message's body preloaded.
+- **`/save all`** — exports the full conversation as a clean JSON array of `{"role", "content"}` objects. Tool calls, thinking blocks, model changes, and other metadata are stripped — just user and assistant turns in chronological order.
+
+In both cases, the file lands directly in your project directory at `.pi/saved_messages/` with a descriptive name like `assistant_a53f79fc_approach-b-is-ex.md` or `conversation_2026-06-05_what-s-the-capital-of.json`. Review the content, make tweaks, close the editor, and the file stays right where you want it.
 
 ## How It Works
 
 1. **Install the extension**, obviously.
-2. **Type `/save`** in interactive mode
-3. **Pick a message** from the session tree (pi's built-in `TreeSelectorComponent` — looks exactly like `/tree`)
-4. **Edit in your editor** — the message body opens in `$VISUAL`, then `$EDITOR`, then a platform default (`notepad` on Windows, `nano` elsewhere)
-5. **Close the editor** — the file is already saved at `.pi/saved_messages/<role>_<entry-id-prefix>_<slug>.md`
+2. **Type `/save`** (or **`/save all`**) in interactive mode
+3. - **`/save`**: pick a message from the session tree (pi's built-in `TreeSelectorComponent` — looks exactly like `/tree`). The file opens in your editor; close it when done.
+   - **`/save all`**: the full conversation is written directly to a `.json` file — no picker, no editor, just a clean export.
+4. The file is saved at `.pi/saved_messages/<role>_<entry-id-prefix>_<slug>.md` (single) or `.pi/saved_messages/conversation_<date>_<slug>.json` (all).
 
 ## Requirements
 - [pi](https://pi.dev) coding agent (interactive TUI mode)
